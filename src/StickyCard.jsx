@@ -1,17 +1,16 @@
 import React from "react";
 import "./App.css";
 
-const StickyCard = (props) => {
+const StickyCard = ({id, title, description, onDelete}) => {
   return (
     <div>
       <div className="container">
-        <div className="content">
-          <h5>{props.id}</h5>
-          <h4 >{props.title}</h4>
-          <p>{props.description}</p>
+        <div className="content" id={`card-${id}`}>
+          <h4 >{title}</h4>
+          <p>{description}</p>
         </div>
         <div>
-          <button className="delete">Delete</button>
+          <button className="delete" onClick={onDelete}>Delete</button>
         </div>
       </div>
     </div>
