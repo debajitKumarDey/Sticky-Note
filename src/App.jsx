@@ -1,72 +1,79 @@
-import React, { useState } from "react";
-import "./App.css";
-import StickyCard from "./StickyCard";
+import React, { useEffect, useState } from 'react'
+import StickyCard from './StickyCard';
 
 const App = () => {
-  const [id, setId] = useState("");
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [cards, setCards] = useState([]);
-  const [error, setError] = useState("");
+  const [details, setDetails] = useState("");
+  const [cards, setCards] = useState(()=>{
+    const saveCards = localStorage.getItem("stickyNotes");
+    return saveCards ? JSON.parse(saveCards) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("stickyNotes", JSON.stringify(cards));
+  }, [cards]);
+
 
   const createHandler = (event) => {
     event.preventDefault();
-    setError("");
+
+    if (!title || !details) return; 
+
     const newCard = {
-      id: Date.now(),
+      id: Date.now(), 
       title,
-      description,
+      details,
     };
-    setCards([...cards, newCard]);
+
+    setCards([...cards, newCard]); 
     setTitle("");
-    setDescription("");
+    setDetails("");
   };
+
+
   const deleteCard = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
+    setCards(cards.filter((card) => card.id !== id)); 
   };
+
   return (
     <div>
       <div className="board">
         <div className="info">
-          <h2 className="heading">Sticky Notes</h2>
-          <input
-            className="title"
-            type="text"
-            placeholder="Enter Topic Title"
+          <h2 className='heading'>Sticky Notes</h2>
+          <input 
+            className='title'
+            type="text" 
+            placeholder='Enter Topic Title'
+            id='title'
             value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
-          />
-          <textarea
-            className="textarea"
-            name="stickyinfo"
+            onChange={(e)=>setTitle(e.target.value)}/>
+
+          <textarea 
+            className='textarea'
+            name="stickyinfo" 
             id="stickyinfo"
             rows="5"
             cols="36"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          ></textarea>
-          <button className="submit" onClick={createHandler}>
-            Submit
-          </button>
+            value={details}
+            onChange={(e)=>{setDetails(e.target.value)}}></textarea>
+
+          <button 
+            className='submit'
+            onClick={createHandler} >Submit
+            </button>
         </div>
         <div className="card">
-          {cards.map((card) => (
-            <StickyCard
-              key={card.id}
-              id={card.id}
-              title={card.title}
-              description={card.description}
-              onDelete={() => deleteCard(card.id)}
-            />
+        {cards.map((card) => (
+            <StickyCard 
+              key={card.id} 
+              title={card.title} 
+              details={card.details}
+              onDelete={() => deleteCard(card.id)} />
           ))}
-        </div>
+        </div>   
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
